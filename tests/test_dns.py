@@ -18,10 +18,12 @@ class TestDns(unittest.TestCase):
     def test_correctIp_whenDomainIsYandexRu(self):
         domain = 'yandex.ru'
 
-        dns_test = dns.DNS(domain)
-        response = dns_test.response
-        actual = response.IP
-        self.assertEqual('5.255.255.50', actual)
+        dns_test = dns.DNS()
+        response = dns_test.resolve(domain)
+
+        actual = set(response.IP)
+        expected = set([    ])
+        self.assertEqual(expected, actual)
 
 
 if __name__ == "__main__":

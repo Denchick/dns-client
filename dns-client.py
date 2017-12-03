@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """ DNS клиент """
+from architecture.client import DNSClient
 
 ERROR_EXCEPTION = 1
 ERROR_WRONG_SETTINGS = 2
@@ -16,7 +17,7 @@ import argparse
 import logging
 
 try:
-    from dns import *
+    from architecture import client, queries
 except Exception as e:
     print('Модули не найдены: "{}"'.format(e), file=sys.stderr)
     sys.exit(ERROR_MODULES_MISSING)
@@ -40,10 +41,12 @@ def create_parser():
     """ Разбор аргументов командной строки """
     parser = argparse.ArgumentParser(description="""DNS клиент.""")
 
-    parser.add_argument('domain', type=str,
+    parser.add_argument(
+        'domain', type=str,
         help="Домен, для которого необходимо узнать IP-адрес.")
-    parser.add_argument('-s', '--server', type=str,
-        help="Использовать другой DNS сервер вместо стандартного - ")
+    parser.add_argument(
+        '-s', '--server', type=str,
+        help="Использовать другой DNS сервер вместо стандартного")
     parser.add_argument(
         '-t', '--type', type=str, default='ns',
         help="""Тип информации, которую хотим получить, возможные типы: txt, soa, ptr, ns, mx, 
@@ -55,17 +58,18 @@ def create_parser():
         '-r', '--recursive', action='store_true', default=False,
         help='Использоваться другие DNS серверы, если на этом нет ответа;')
     parser.add_argument(
-        '-r', '--retry', type=int, default=3,
+        '-rt', '--retry', type=int, default=3,
         help='Количество попыток получить нужную информацию.')
     parser.add_argument(
         '-to', '--timeout', type=int, default=100,
         help='Время между попытками запросов к серверу.')
     parser.add_argument(
-        '-f', '--fail', action='store_true', default=False, help="""Режим debug. Временные файлы не удаляются. Warning! 
-        В этом режиме папку с временными файлами необходимо удалять самостоятельно во избежание падения утилиты.""")
+        '-tcp', '--usetcp', type=bool, default=False,
+        help='Использовать TCP вместо UDP по-умолчанию.'
+    )
     parser.add_argument(
-        '-d', '--debug', action='store_true', default=False, help="""Режим debug. Временные файлы не удаляются. Warning! 
-        В этом режиме папку с временными файлами необходимо удалять самостоятельно во избежание падения утилиты.""")
+        '-d', '--debug', action='store_true', default=False,
+        help='Режим debug.')
     return parser.parse_args()
 
 
@@ -76,14 +80,19 @@ def main():
     log.setFormatter(logging.Formatter(
         '%(asctime)s [%(levelname)s <%(name)s>] %(message)s'))
 
-    for module in (sys.modules[__name__], map_reduce):
+    for module in (sys.modules[__name__], client, queries):
         logger = logging.getLogger(module.LOGGER_NAME)
         logger.setLevel(logging.DEBUG if args.debug else logging.ERROR)
         logger.addHandler(log)
 
     LOGGER.info('Application is start.')
 
-
+    if args.server is None:
+        dns_client = DNSClient()
+    else:
+        dns_client = DNSClient(server=args.server)
+    dns_client.send_query(args.domain, recursion_desired=(not args.recursive), debug_mode=args.debug)
+    dns_client.disconnect()
 
 if __name__ == "__main__":
     main()
