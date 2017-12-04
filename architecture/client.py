@@ -1,3 +1,4 @@
+import ipaddress
 import socket
 import sys
 
@@ -11,23 +12,37 @@ LOGGER = logging.getLogger(LOGGER_NAME)
 
 class DNSClient:
 
-    def __init__(self, server='8.8.8.8'):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.settimeout(5)
-        self.connect_server(server)
+    def __init__(self,
+                 server: str,
+                 port: int,
+                 timeout: int,
+                 use_tcp: bool):
+        ip_version = ipaddress.ip_address(server).version
+        self.ip_version = ip_version
+        if ip_version == 4:
+            ip_protocol = socket.AF_INET
+        elif ip_version == 6:
+            ip_protocol = socket.AF_INET6
+        else:
+            raise AttributeError("Unknown IP protocol version. IPv{0}? You're serious?".format(ip_version))
+        transport_protocol = socket.SOCK_STREAM if use_tcp else socket.SOCK_DGRAM
+        self.socket = socket.socket(ip_protocol, transport_protocol)
+        self.socket.settimeout(timeout)
+        self.connect_server(server, port)
 
-    def connect_server(self, server):
+    def connect_server(self, server, port):
         self.server = server
+        self.port = port
         try:
-            self.socket.connect((server, 53))
+            self.socket.connect((server, port))
         except Exception:
-            print('Unable to connect to server {0}'.format(server))
+            print('Unable to connect to server {0} by port {1}'.format(server, port))
             return False
         return True
 
-    def send_query(self, request, recursion_desired=True, debug_mode=False, IPv6=False):
+    def send_query(self, request, recursion_desired=True, debug_mode=False):
         format = DNSMessageFormat()
-        query = format.encode(request, recursion_desired, IPv6)
+        query = format.encode(request, recursion_desired, self.ip_version == 6)
         self.socket.send(query)
         try:
             response = self.socket.recv(1024)

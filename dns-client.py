@@ -45,7 +45,7 @@ def create_parser():
         'domain', type=str,
         help="Домен, для которого необходимо узнать IP-адрес.")
     parser.add_argument(
-        '-s', '--server', type=str,
+        '-s', '--server', type=str, default='8.8.8.8',
         help="Использовать другой DNS сервер вместо стандартного")
     parser.add_argument(
         '-t', '--type', type=str, default='ns',
@@ -57,9 +57,6 @@ def create_parser():
     parser.add_argument(
         '-r', '--recursive', action='store_true', default=False,
         help='Использоваться другие DNS серверы, если на этом нет ответа;')
-    parser.add_argument(
-        '-rt', '--retry', type=int, default=3,
-        help='Количество попыток получить нужную информацию.')
     parser.add_argument(
         '-to', '--timeout', type=int, default=100,
         help='Время между попытками запросов к серверу.')
@@ -87,10 +84,11 @@ def main():
 
     LOGGER.info('Application is start.')
 
-    if args.server is None:
-        dns_client = DNSClient()
-    else:
-        dns_client = DNSClient(server=args.server)
+    dns_client = DNSClient(
+        args.server,
+        args.port,
+        args.timeout,
+        args.usetcp)
     dns_client.send_query(args.domain, recursion_desired=(not args.recursive), debug_mode=args.debug)
     dns_client.disconnect()
 
