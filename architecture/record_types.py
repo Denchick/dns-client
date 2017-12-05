@@ -3,7 +3,7 @@ import struct
 from architecture import QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
 from architecture.utils import Utils
 
-class RecordType:
+class DNSRecordType:
 
     def set_type_data(self, message, offset):
         rdata = message[offset:offset + self.rd_lenght]
@@ -22,18 +22,18 @@ class RecordType:
 
     def decode(self, message, offset):
         name = Utils.decode_string(message, offset)
-        offset = name[0]
+        current_offset = name[0]
         self.name = name[1]
-        self.type = Utils.unpack(message[offset: offset + 2])
-        offset += 2
-        self.request_class = Utils.unpack(message[offset: offset + 2])
-        offset += 2
-        self.ttl = struct.unpack('>I', message[offset:offset + 4])[0]
-        offset += 4
-        self.rd_lenght = Utils.unpack(message[offset:offset + 2])
-        offset += 2
-        self.set_type_data(message, offset)
-        return offset + self.rd_lenght
+        self.type = Utils.unpack(message[current_offset: current_offset + 2])
+        current_offset += 2
+        self.request_class = Utils.unpack(message[current_offset: current_offset + 2])
+        current_offset += 2
+        self.ttl = struct.unpack('>I', message[current_offset:current_offset + 4])[0]
+        current_offset += 4
+        self.rd_lenght = Utils.unpack(message[current_offset:current_offset + 2])
+        current_offset += 2
+        self.set_type_data(message, current_offset)
+        return current_offset + self.rd_lenght
 
     def __str__(self):
         result = []

@@ -17,7 +17,7 @@ import argparse
 import logging
 
 try:
-    from architecture import client, queries
+    from architecture import client, message_format
 except Exception as e:
     print('Модули не найдены: "{}"'.format(e), file=sys.stderr)
     sys.exit(ERROR_MODULES_MISSING)
@@ -77,7 +77,7 @@ def main():
     log.setFormatter(logging.Formatter(
         '%(asctime)s [%(levelname)s <%(name)s>] %(message)s'))
 
-    for module in (sys.modules[__name__], client, queries):
+    for module in (sys.modules[__name__], client, message_format):
         logger = logging.getLogger(module.LOGGER_NAME)
         logger.setLevel(logging.DEBUG if args.debug else logging.ERROR)
         logger.addHandler(log)
@@ -90,7 +90,7 @@ def main():
         args.timeout,
         args.usetcp)
     dns_client.send_query(args.domain, recursion_desired=(not args.recursive), debug_mode=args.debug)
-    dns_client.disconnect()
+    dns_client.disconnect_server()
 
 if __name__ == "__main__":
     main()

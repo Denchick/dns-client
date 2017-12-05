@@ -8,15 +8,15 @@ class DNSQuery:
 
     def decode(self, message, offset):
         name = Utils.decode_string(message, offset)
-        offset = name[0]
+        current_offset = name[0]
         self.name = name[1]
-        self.type = Utils.unpack(message[offset:offset + 2])
-        self.request_class = Utils.unpack(message[offset + 2: offset + 4])
-        return offset + 4
+        self.type = Utils.unpack(message[current_offset:current_offset + 2])
+        self.request_class = Utils.unpack(message[current_offset + 2: current_offset + 4])
+        return current_offset + 4
 
-    def set_question(self, name, IPv6):
+    def set_question(self, name, is_use_IPv6):
         self.name = name
-        self.type = 28 if IPv6 else 1
+        self.type = 28 if is_use_IPv6 else 1
         self.request_class = 1
 
     def encode_domain_name(self):
