@@ -1,4 +1,6 @@
+# for query
 QUERY_TYPE_NAMES = {1 : 'A', 2: 'NS', 5: 'CNAME', 15 : 'MX', 28: 'AAAA'}
+# for answer
 QUERY_CLASS_NAMES = {1  : 'IN'}
 
 # for flags

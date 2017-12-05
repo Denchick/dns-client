@@ -54,7 +54,7 @@ class TestHeader(unittest.TestCase):
         data = b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b'
         self.header1.decode(data)
         self.assertEqual(1, self.header1.transaction_id)
-        self.assertEqual(2, self.header1.qr)
+        self.assertEqual(2, self.header1.get_QR())
         self.assertEqual(3, self.header1.opcode)
         self.assertEqual(4, self.header1.tc)
         self.assertEqual(5, self.header1.rd)
