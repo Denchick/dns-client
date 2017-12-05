@@ -38,9 +38,9 @@ class DNSClient:
         except Exception:
             print('Unable to connect to server {0} by port {1}'.format(server, port))
 
-    def send_query(self, domain_name, recursion_desired=True, debug_mode=False):
-        message_format = DNSMessageFormat()
-        query = message_format.encode(domain_name, recursion_desired, self.ip_version == 6)
+    def send_query(self, domain_name, recursion_desired=True, type_record='A', debug_mode=False):
+        message_format = DNSMessageFormat(type_record)
+        query = message_format.encode(domain_name, recursion_desired)
         self.socket.send(query)
         try:
             response = self.socket.recv(1024)

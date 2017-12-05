@@ -1,5 +1,6 @@
 # for query
-QUERY_TYPE_NAMES = {1 : 'A', 2: 'NS', 5: 'CNAME', 15 : 'MX', 28: 'AAAA'}
+BY_NUMBER_QUERY_TYPE_NAMES = {1 : 'A', 2: 'NS', 5: 'CNAME', 15 : 'MX', 28: 'AAAA'}
+NUMBER_BY_QUERY_TYPE_NAMES = {'A': 1, 'NS': 2,'CNAME': 5,'MX': 15,'AAAA': 28}
 # for answer
 QUERY_CLASS_NAMES = {1  : 'IN'}
 

@@ -1,9 +1,14 @@
 import struct
 
-from architecture import QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
+from architecture import BY_NUMBER_QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
 from architecture.utils import Utils
 
 class DNSRecordType:
+
+    def __init__(self, record_type=None):
+        if record_type != None:
+            pass
+
 
     def set_type_data(self, message, offset):
         rdata = message[offset:offset + self.rd_lenght]
@@ -38,7 +43,7 @@ class DNSRecordType:
     def __str__(self):
         result = []
         result.append('Name: {0}'.format(self.name))
-        result.append('Type: {0}'.format(QUERY_TYPE_NAMES[self.type]))
+        result.append('Type: {0}'.format(BY_NUMBER_QUERY_TYPE_NAMES[self.type]))
         result.append('Class: {0}'.format(QUERY_CLASS_NAMES[self.request_class]))
         result.append('TTL: {0}'.format(self.ttl))
         return  '\n    '.join(result)
@@ -47,7 +52,7 @@ class DNSRecordType:
         '''for debug mode
         '''
         print('    Name: {0}'.format(self.name))
-        print('    Type: {0}'.format(QUERY_TYPE_NAMES[self.type]))
+        print('    Type: {0}'.format(BY_NUMBER_QUERY_TYPE_NAMES[self.type]))
         print('    Class: {0}'.format(QUERY_CLASS_NAMES[self.request_class]))
         print('    TTL: {0}'.format(self.ttl))
         self.type_data.print()

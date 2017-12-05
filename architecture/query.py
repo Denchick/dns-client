@@ -1,6 +1,6 @@
 import struct
 
-from architecture import QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
+from architecture import BY_NUMBER_QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
 from architecture.utils import Utils
 
 
@@ -14,9 +14,9 @@ class DNSQuery:
         self.request_class = Utils.unpack(message[current_offset + 2: current_offset + 4])
         return current_offset + 4
 
-    def set_question(self, name, is_use_IPv6):
+    def set_question(self, name, type_record=1):
         self.name = name
-        self.type = 28 if is_use_IPv6 else 1
+        self.type = type_record
         self.request_class = 1
 
     def encode_domain_name(self):
@@ -39,5 +39,5 @@ class DNSQuery:
     def print(self):
         ''' for debug mode '''
         print('    Name: {0}'.format(self.name))
-        print('    Type: {0}'.format(QUERY_TYPE_NAMES[self.type]))
+        print('    Type: {0}'.format(BY_NUMBER_QUERY_TYPE_NAMES[self.type]))
         print('    Class: {0}'.format(QUERY_CLASS_NAMES[self.request_class]))
