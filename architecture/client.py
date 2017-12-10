@@ -2,16 +2,10 @@ import ipaddress
 import socket
 import sys
 
-import logging
 
-from architecture.message_format import DNSMessageFormat
-
-LOGGER_NAME = 'architecture.client'
-LOGGER = logging.getLogger(LOGGER_NAME)
-
+from architecture import request, response
 
 class DNSClient:
-
     def __init__(self,
                  server: str,
                  port: int,
@@ -39,29 +33,26 @@ class DNSClient:
             print('Unable to connect to server {0} by port {1}'.format(server, port))
 
     def send_query(self, domain_name, recursion_desired=True, type_record='A', debug_mode=False):
-        message_format = DNSMessageFormat(type_record)
-        query = message_format.encode(domain_name, recursion_desired)
-        self.socket.send(query)
+        request_object = request.Request(domain_name, recursion_desired, type_record)
+        self.socket.send(request_object.get_encoded_request())
         try:
-            response = self.socket.recv(1024)
+            raw_response = self.socket.recv(1024)
         except Exception:
             print('Timeout: {0}'.format(self.server))
             sys.exit(0)
-        message_format.decode(response)
+        response_object = response.Response(raw_response)
 
         if debug_mode:
             print('Response from {0}'.format(self.server))
-            message_format.print()
+            response_object.print()
 
-        if len(message_format.answers) > 0 or not recursion_desired:
+        if len(response_object.answers) > 0 or not recursion_desired:
             return
 
-        for rr in message_format.additional_RRs:
+        for rr in response_object.additional_RRs:
             if self._connect_server(rr.response_data.ip):
-                ipv6 = (rr.type == 28)
-                self.send_query(domain_name, False, debug_mode, ipv6)
+                self.send_query(domain_name, recursion_desired, type_record, debug_mode)
 
 
     def disconnect_server(self):
         self.socket.close()
-

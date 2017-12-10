@@ -10,7 +10,7 @@ from architecture import header
 class TestHeader(unittest.TestCase):
 
     def setUp(self):
-        self.header1 = header.DNSHeader()
+        self.header1 = header.Header()
 
     def test_generate_ID_shouldReturnIntegerFromZeroTo65536(self):
         for i in range(65536):

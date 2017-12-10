@@ -1,6 +1,5 @@
 import struct
 
-
 class Utils:
     def pack_two_bytes(value):
         """ >H means big-endian unsigned short - 2 bytes """

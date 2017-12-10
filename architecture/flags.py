@@ -1,13 +1,9 @@
 # https://github.com/rthalley/dnspython/blob/master/dns/flags.py
 # https://habrahabr.ru/sandbox/112582/
 
-
 from architecture import MESSAGE_TYPES, OPCODES, RESPONSE_CODE_NAMES, AUTHORITATIVE, TRUNCATED, RECURSION_DESIRED, \
     RECURSION_AVAILABLE, ANSWER_AUTHENTICATED, NON_AUTHENTICATED_DATA
 from architecture.utils import Utils
-
-
-
 
 #: Query Response
 QR = 0x8000

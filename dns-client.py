@@ -14,10 +14,9 @@ if sys.version_info < (3, 0):
     sys.exit(ERROR_PYTHON_VERSION)
 
 import argparse
-import logging
 
 try:
-    from architecture import client, message_format
+    from architecture import client
 except Exception as e:
     print('Модули не найдены: "{}"'.format(e), file=sys.stderr)
     sys.exit(ERROR_MODULES_MISSING)
@@ -25,9 +24,6 @@ except Exception as e:
 __version__ = '0.1'
 __author__ = 'Volkov Denis'
 __email__ = 'denchick1997@mail.ru'
-
-LOGGER_NAME = 'dns-client'
-LOGGER = logging.getLogger(LOGGER_NAME)
 
 
 # -type — тип информации, которую хотим получить, возможные типы: txt, soa, ptr, ns, mx, mr, minfo, mg, mb, hinfo, gid, cname, a, any;
@@ -66,22 +62,18 @@ def create_parser():
     parser.add_argument(
         '-d', '--debug', action='store_true', default=False,
         help='Режим debug.')
+    parser.add_argument(
+        '--version', action='store_true', default=False,
+        help="Печатает версию утилиты и выходит.")
     return parser.parse_args()
 
 
 def main():
     args = create_parser()
 
-    log = logging.StreamHandler(sys.stderr)
-    log.setFormatter(logging.Formatter(
-        '%(asctime)s [%(levelname)s <%(name)s>] %(message)s'))
-
-    for module in (sys.modules[__name__], client, message_format):
-        logger = logging.getLogger(module.LOGGER_NAME)
-        logger.setLevel(logging.DEBUG if args.debug else logging.ERROR)
-        logger.addHandler(log)
-
-    LOGGER.info('Application is start.')
+    if args.version:
+        print(__version__)
+        sys.exit()
 
     dns_client = DNSClient(
         args.server,
