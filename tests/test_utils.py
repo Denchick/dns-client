@@ -1,5 +1,10 @@
 import unittest
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             os.path.pardir))
 from architecture.utils import Utils
+
 
 class MyTestCase(unittest.TestCase):
     def test_pack_two_bytes(self):

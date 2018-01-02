@@ -1,6 +1,12 @@
 import unittest
+import sys
+import os
 
-from architecture.response import ResponseQuery, ResponseHeader
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             os.path.pardir))
+
+from architecture.response import ResponseQuery
+from architecture.response import ResponseHeader
 
 
 class MyTestCase(unittest.TestCase):

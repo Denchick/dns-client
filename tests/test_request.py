@@ -2,12 +2,10 @@ import unittest
 import os
 import sys
 
-from architecture.request import RequestHeader
-
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              os.path.pardir))
 
-from architecture.response import ResponseHeader
+from architecture.request import RequestHeader
 
 
 class TestRequest(unittest.TestCase):
