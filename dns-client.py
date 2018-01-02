@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """ DNS клиент """
+import logging
+
+import colorama
+import coloredlogs
+import os
+
 from architecture.client import DNSClient
 
 ERROR_EXCEPTION = 1
@@ -16,22 +22,17 @@ if sys.version_info < (3, 0):
 import argparse
 
 try:
-    from architecture import client
+    from architecture import client, flags, record_types, request, response, server_resolver, utils
 except Exception as e:
     print('Модули не найдены: "{}"'.format(e), file=sys.stderr)
     sys.exit(ERROR_MODULES_MISSING)
 
-__version__ = '0.1'
+__version__ = '1.0'
 __author__ = 'Volkov Denis'
 __email__ = 'denchick1997@mail.ru'
 
-
-# -type — тип информации, которую хотим получить, возможные типы: txt, soa, ptr, ns, mx, mr, minfo, mg, mb, hinfo, gid, cname, a, any;
-# -port — другой порт DNS сервера;
-# -recurse — использоваться другие DNS серверы, если на этом нет ответа;
-# -retry — количество попыток получить нужную информацию;
-# -timeout — время между попытками запросов к серверу;
-# -fail — пробовать другой сервер имен, если этот вернул ошибку.
+LOGGER_NAME = 'dns-client'
+LOGGER = logging.getLogger(LOGGER_NAME)
 
 def create_parser():
     """ Разбор аргументов командной строки """
@@ -57,16 +58,28 @@ def create_parser():
         help='Время между попытками запросов к серверу.')
     parser.add_argument(
         '-tcp', '--usetcp', type=bool, default=False,
-        help='Использовать TCP вместо UDP по-умолчанию.'
-    )
+        help='Использовать TCP вместо UDP по-умолчанию.')
     parser.add_argument(
-        '-d', '--debug', action='store_true', default=False,
-        help='Режим debug.')
+        '-v', '--verbose', action='store_true', default=False,
+        help='Вывести информацию на консоль.')
     parser.add_argument(
         '--version', action='store_true', default=False,
         help="Печатает версию утилиты и выходит.")
     return parser.parse_args()
 
+def initialize_logger(is_verbose):
+    if 'win' in sys.platform:
+        colorama.init()
+    log = logging.StreamHandler() if is_verbose else logging.FileHandler(os.path.join('logs', 'log.log')  , "w")
+    formatter = coloredlogs.ColoredFormatter if is_verbose else logging.Formatter
+    log.setFormatter(formatter(
+        '%(asctime)s [%(levelname)s <%(name)s>] %(message)s'))
+    log.setLevel(logging.DEBUG)
+
+    for module in (sys.modules[__name__], client):
+        logger = logging.getLogger(module.LOGGER_NAME)
+        logger.setLevel(logging.DEBUG)
+        logger.addHandler(log)
 
 def main():
     args = create_parser()
@@ -75,13 +88,19 @@ def main():
         print(__version__)
         sys.exit()
 
-    dns_client = DNSClient(
-        args.server,
-        args.port,
-        args.timeout,
-        args.usetcp)
-    dns_client.send_query(args.domain, recursion_desired=args.recursion_desired, type_record=args.type, debug_mode=args.debug)
+    initialize_logger(args.verbose)
+
+    LOGGER.debug("Application started.")
+    dns_client = DNSClient(args.server,
+                           args.port,
+                           args.timeout,
+                           args.usetcp)
+    dns_client.send_query(args.domain,
+                          args.recursion_desired,
+                          args.type)
     dns_client.disconnect_server()
+
+    LOGGER.debug("Application is end.")
 
 if __name__ == "__main__":
     main()

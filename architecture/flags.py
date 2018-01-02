@@ -80,14 +80,15 @@ class Flags:
         """ Request Success """
         return self._decoded_flags['rcode']
 
-    def print(self):
-        print('    Flags: 0x{0:x} ({0:08b})'.format(self._encoded_flags))
-        print('        Response: message is {0} ({1})'.format(MESSAGE_TYPES[self.get_QR()], self.get_QR()))
-        print('        Opcode: {0} ({1})'.format(OPCODES[self.get_OPCODE()], self.get_OPCODE()))
-        print('        Authorative: {0} ({1})'.format(AUTHORITATIVE[self.get_AA()], self.get_AA()))
-        print('        Truncated: {0} ({1})'.format(TRUNCATED[self.get_TC()], self.get_TC()))
-        print('        Recursion Desired: {0} ({1})'.format(RECURSION_DESIRED[self.get_RD()], self.get_RD()))
-        print('        Recursion Available: {0} ({1})'.format(RECURSION_AVAILABLE[self.get_RA()], self.get_RA()))
-        print('        Answer authenticated: {0} ({1})'.format(ANSWER_AUTHENTICATED[self.get_AD()], self.get_AD()))
-        print('        Non-authenticated data: {0} ({1})'.format(NON_AUTHENTICATED_DATA[self.get_CD()], self.get_CD()))
-        print('        Reply code: {0} ({1})'.format(RESPONSE_CODE_NAMES[self.get_RCODE()], self.get_RCODE()))
+    def __str__(self):
+        result = '    Flags: 0x{0:x} ({0:08b})\n'.format(self._encoded_flags)
+        result += '        Response: message is {0} ({1})\n'.format(MESSAGE_TYPES[self.get_QR()], self.get_QR())
+        result += '        Opcode: {0} ({1})\n'.format(OPCODES[self.get_OPCODE()], self.get_OPCODE())
+        result += '        Authorative: {0} ({1})\n'.format(AUTHORITATIVE[self.get_AA()], self.get_AA())
+        result += '        Truncated: {0} ({1})\n'.format(TRUNCATED[self.get_TC()], self.get_TC())
+        result += '        Recursion Desired: {0} ({1})\n'.format(RECURSION_DESIRED[self.get_RD()], self.get_RD())
+        result += '        Recursion Available: {0} ({1})\n'.format(RECURSION_AVAILABLE[self.get_RA()], self.get_RA())
+        result += '        Answer authenticated: {0} ({1})\n'.format(ANSWER_AUTHENTICATED[self.get_AD()], self.get_AD())
+        result += '        Non-authenticated data: {0} ({1})\n'.format(NON_AUTHENTICATED_DATA[self.get_CD()], self.get_CD())
+        result += '        Reply code: {0} ({1})\n'.format(RESPONSE_CODE_NAMES[self.get_RCODE()], self.get_RCODE())
+        return result

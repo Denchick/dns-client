@@ -1,5 +1,4 @@
 import struct
-from architecture import BY_NUMBER_QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
 from architecture.utils import Utils
 
 class ATypeData:
@@ -7,8 +6,8 @@ class ATypeData:
         ip = struct.unpack('BBBB', data)
         self.ip = "{0}.{1}.{2}.{3}".format(ip[0], ip[1], ip[2], ip[3]) # мб просто использовать ip?
 
-    def print(self):
-        print('    Name Server: {0}'.format(self.ip))
+    def __str__(self):
+        return str(self.ip)
 
 
 class AAAATypeData:
@@ -33,15 +32,15 @@ class AAAATypeData:
             result += str(hex(256 + byte))[3:]
         return result
 
-    def print(self):
-        print('    Name Server: {0}'.format(self.ip))
+    def __str__(self):
+        return str(self.ip)
 
 class NSTypeData:
     def __init__(self, message, offset):
         self.name = Utils.decode_string(message, offset)[1]
 
-    def print(self):
-        print('    Name Server: {0}'.format(self.name))
+    def __str__(self):
+        return str(self.name)
 
 
 class MXTypeData:
@@ -49,19 +48,19 @@ class MXTypeData:
         self.preference = Utils.unpack(message[offset:offset + 2])
         self.mail_exchanger = Utils.decode_string(message, offset + 4)[1]
 
-    def print(self):
-        print('    Name Server: {0} {1}'.format(self.preference, self.mail_exchanger))
+    def __str__(self):
+        return '{0} {1}'.format(self.preference, self.mail_exchanger)
 
 class CNAMETypeData:
     def __init__(self, data):
         self.data = data
 
-    def print(self):
-        print('    Name Server: {0}'.format(self.data))
+    def __str__(self):
+        return str(self.data)
 
 class BinaryTypeData:
     def __init__(self, data):
         self.data = data
 
-    def print(self):
-        print('    Name Server: {0}'.format(self.data))
+    def __str__(self):
+        return str(self.data)

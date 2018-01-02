@@ -1,20 +1,24 @@
 import struct
 
-from architecture import BY_NUMBER_QUERY_TYPE_NAMES, QUERY_CLASS_NAMES, record_types
+from architecture import BY_NUMBER_QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
 from architecture.flags import Flags
-from architecture.record_types import ATypeData, NSTypeData, CNAMETypeData, MXTypeData, AAAATypeData, \
-    BinaryTypeData
+from architecture.record_types import ATypeData, NSTypeData, CNAMETypeData, MXTypeData, AAAATypeData, BinaryTypeData
 from architecture.utils import Utils
+import logging
 
+LOGGER_NAME = 'dns-client'
+LOGGER = logging.getLogger(LOGGER_NAME)
 
 class Response:
     def __init__(self, raw_message):
+        LOGGER.debug("Try to parse raw response: {0}".format(raw_message))
         self.header = ResponseHeader(raw_message)
         offset = self.header.get_offfset()
         self.questions =[]
         self.answers = []
         self.authority_RRs = []
         self.additional_RRs = []
+        LOGGER.debug("Try to parse a body of raw message")
         for i in range(self.header.number_of_questions):
             self.questions.append(ResponseQuery(raw_message, offset))
             offset = self.questions[i].get_offset()
@@ -27,21 +31,19 @@ class Response:
         for i in range(self.header.number_of_additional_rrs):
             self.additional_RRs.append(ResponseRecordType(raw_message, offset))
             offset = self.additional_RRs[i].get_offset()
+        LOGGER.debug("Parsed")
 
-    def print(self):
-        self.header.print()
+    def __str__(self):
+        result = str(self.header) + "\n"
         for i in range(self.header.number_of_questions):
-            print('QUESTION[{0}]'.format(i))
-            self.questions[i].print()
+            result += 'QUESTION[{0}]\n{1}'.format(i, str(self.questions[i]))
         for i in range(self.header.number_of_answers):
-            print('ANSWER[{0}]'.format(i))
-            self.answers[i].print()
+            result += 'ANSWER[{0}]\n{1}'.format(i, str(self.answers[i]))
         for i in range(self.header.number_of_authority_rrs):
-            print('AUTHORITY_RR[{0}]'.format(i))
-            self.authority_RRs[i].print()
+            result += 'AUTHORITY_RR[{0}]\n{1}'.format(i, str(self.authority_RRs[i]))
         for i in range(self.header.number_of_additional_rrs):
-            print('ADDITIONAL_RR[{0}]'.format(i))
-            self.additional_RRs[i].print()
+            result += 'ADDITIONAL_RR[{0}]\n{1}'.format(i, str(self.additional_RRs[i]))
+        return result
 
 class ResponseQuery:
     def __init__(self, raw_message, offset):
@@ -55,14 +57,15 @@ class ResponseQuery:
     def get_offset(self):
         return self._current_offset
 
-    def print(self):
-        ''' for debug mode '''
-        print('    Name: {0}'.format(self._domain_name))
-        print('    Type: {0}'.format(BY_NUMBER_QUERY_TYPE_NAMES[self._type]))
-        print('    Class: {0}'.format(QUERY_CLASS_NAMES[self._request_class]))
+    def __str__(self):
+        return "    Name: {0}\n    Type: {1}\n    Class: {2}\n".format(
+            self._domain_name,
+            BY_NUMBER_QUERY_TYPE_NAMES[self._type],
+            QUERY_CLASS_NAMES[self._request_class])
 
 class ResponseHeader:
     def __init__(self, raw_message):
+        LOGGER.debug("Try to parse raw header: {0}".format(raw_message[0:12]))
         self.transaction_id = Utils.unpack(raw_message[0:2])
         self.flags = Flags()
         self.flags.decode(raw_message[2:4])
@@ -70,17 +73,19 @@ class ResponseHeader:
         self.number_of_answers = Utils.unpack(raw_message[6:8])
         self.number_of_authority_rrs = Utils.unpack(raw_message[8:10])
         self.number_of_additional_rrs = Utils.unpack(raw_message[10:12])
+        LOGGER.debug("OK.")
 
     def get_offfset(self):
         return 12
 
-    def print(self):
-        print('    Transaction ID: {0}'.format(hex(self.transaction_id)))
-        self.flags.print()
-        print('    Questions: {0}'.format(self.number_of_questions))
-        print('    Answers: {0}'.format(self.number_of_answers))
-        print('    Authority RRs: {0}'.format(self.number_of_authority_rrs))
-        print('    Additional RRs: {0}'.format(self.number_of_additional_rrs))
+    def __str__(self):
+        result = '    Transaction ID: {0}\n'.format(hex(self.transaction_id))
+        result += str(self.flags)
+        result += '    Questions: {0}\n'.format(self.number_of_questions)
+        result += '    Answers: {0}\n'.format(self.number_of_answers)
+        result += '    Authority RRs: {0}\n'.format(self.number_of_authority_rrs)
+        result += '    Additional RRs: {0}\n'.format(self.number_of_additional_rrs)
+        return result
 
 class ResponseRecordType:
     def __init__(self, message, offset):
@@ -116,11 +121,10 @@ class ResponseRecordType:
     def get_offset(self):
         return self._current_offset
 
-    def print(self):
-        '''for debug mode
-        '''
-        print('    Name: {0}'.format(self.name))
-        print('    Type: {0}'.format(BY_NUMBER_QUERY_TYPE_NAMES[self.type]))
-        print('    Class: {0}'.format(QUERY_CLASS_NAMES[self.request_class]))
-        print('    TTL: {0}'.format(self.ttl))
-        self.type_data.print()
+    def __str__(self):
+        result = '    Name: {0}\n'.format(self.name)
+        result += '    Type: {0}\n'.format(BY_NUMBER_QUERY_TYPE_NAMES[self.type])
+        result += '    Class: {0}\n'.format(QUERY_CLASS_NAMES[self.request_class])
+        result += '    TTL: {0}\n'.format(self.ttl)
+        result += str(self.type_data) + "\n"
+        return result
