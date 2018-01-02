@@ -8,7 +8,7 @@ import logging
 
 LOGGER_NAME = 'dns-client'
 LOGGER = logging.getLogger(LOGGER_NAME)
-#14-34, 37-46, 50-55, 58, 61, 68-76, 80, 83-89, 93-105, 108-120, 123, 126-131
+#14-34, 37-46, 80, 83-89, 110, 112, 116
 class Response:
     def __init__(self, raw_message):
         LOGGER.debug("Try to parse raw response: {0}".format(raw_message))
@@ -75,6 +75,10 @@ class ResponseHeader:
         self.number_of_additional_rrs = Utils.unpack(raw_message[10:12])
         LOGGER.debug("OK.")
 
+    def __eq__(self, other):
+        if not isinstance(other, ResponseHeader):
+            return False
+        return self.__dict__ == other.__dict__
 
     def get_offfset(self):
         return 12

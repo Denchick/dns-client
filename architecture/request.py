@@ -10,7 +10,7 @@ class Request:
 
     def __init__(self, domain_name, recursion_desired=True, type_record=None):
         if type_record is None:
-            self.type_record = 1
+            type_record = 'A'
         try:
             self.type_record = NUMBER_BY_QUERY_TYPE_NAMES[type_record]
         except KeyError:
