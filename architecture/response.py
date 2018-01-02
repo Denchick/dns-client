@@ -75,6 +75,7 @@ class ResponseHeader:
         self.number_of_additional_rrs = Utils.unpack(raw_message[10:12])
         LOGGER.debug("OK.")
 
+
     def get_offfset(self):
         return 12
 

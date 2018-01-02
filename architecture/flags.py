@@ -80,6 +80,11 @@ class Flags:
         """ Request Success """
         return self._decoded_flags['rcode']
 
+    def __eq__(self, other):
+        if not isinstance(other, Flags):
+            return False
+        return self._encoded_flags == other._encoded_flags
+
     def __str__(self):
         result = '    Flags: 0x{0:x} ({0:08b})\n'.format(self._encoded_flags)
         result += '        Response: message is {0} ({1})\n'.format(MESSAGE_TYPES[self.get_QR()], self.get_QR())
