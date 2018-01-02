@@ -69,7 +69,9 @@ def create_parser():
 
 def initialize_logger(is_verbose):
     if 'win' in sys.platform:
+        # для корректного отображения цветов в windows
         colorama.init()
+
     log = logging.StreamHandler() if is_verbose else logging.FileHandler(os.path.join('logs', 'log.log')  , "w")
     formatter = coloredlogs.ColoredFormatter if is_verbose else logging.Formatter
     log.setFormatter(formatter(
