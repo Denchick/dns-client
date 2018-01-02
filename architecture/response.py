@@ -2,13 +2,13 @@ import struct
 
 from architecture import BY_NUMBER_QUERY_TYPE_NAMES, QUERY_CLASS_NAMES
 from architecture.flags import Flags
-from architecture.record_types import ATypeData, NSTypeData, CNAMETypeData, MXTypeData, AAAATypeData, BinaryTypeData
+from architecture.record_types import ATypeData, NSTypeData, AAAATypeData, BinaryTypeData
 from architecture.utils import Utils
 import logging
 
 LOGGER_NAME = 'dns-client'
 LOGGER = logging.getLogger(LOGGER_NAME)
-
+#14-34, 37-46, 50-55, 58, 61, 68-76, 80, 83-89, 93-105, 108-120, 123, 126-131
 class Response:
     def __init__(self, raw_message):
         LOGGER.debug("Try to parse raw response: {0}".format(raw_message))
@@ -110,10 +110,6 @@ class ResponseRecordType:
             self.type_data = ATypeData(rdata)
         elif self.type == 2:
             self.type_data = NSTypeData(message, offset)
-        elif self.type == 5:
-            self.type_data = CNAMETypeData(message, offset)
-        elif self.type == 15:
-            self.type_data = MXTypeData(message, offset)
         elif self.type == 28:
             self.type_data = AAAATypeData(rdata)
         else:

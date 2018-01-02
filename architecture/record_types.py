@@ -26,7 +26,8 @@ class AAAATypeData:
             self.ip += value + ':'
         self.ip = self.ip[:-1]
 
-    def hexdump(self, data):
+    @staticmethod
+    def hexdump(data):
         result = ''
         for byte in data:
             result += str(hex(256 + byte))[3:]
@@ -35,6 +36,7 @@ class AAAATypeData:
     def __str__(self):
         return str(self.ip)
 
+
 class NSTypeData:
     def __init__(self, message, offset):
         self.name = Utils.decode_string(message, offset)[1]
@@ -42,21 +44,6 @@ class NSTypeData:
     def __str__(self):
         return str(self.name)
 
-
-class MXTypeData:
-    def __init__(self, message, offset):
-        self.preference = Utils.unpack(message[offset:offset + 2])
-        self.mail_exchanger = Utils.decode_string(message, offset + 4)[1]
-
-    def __str__(self):
-        return '{0} {1}'.format(self.preference, self.mail_exchanger)
-
-class CNAMETypeData:
-    def __init__(self, data):
-        self.data = data
-
-    def __str__(self):
-        return str(self.data)
 
 class BinaryTypeData:
     def __init__(self, data):
