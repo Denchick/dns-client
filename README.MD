@@ -25,7 +25,29 @@
 - Модули: `architecture/`
 - Тесты: `tests/`
 
+На модули в `architecture/`  написаны тесты, их можно найти в `/tests`. Покрытие по строкам составляет 89%
+
 Для запуска тестов можно использовать `runtest.sh` (нужен `bash`, `coverage3`)
+
+```bash
+
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+architecture/__init__.py          12      0   100%
+architecture/flags.py             55     12    78%   85, 89-99
+architecture/record_types.py      40      3    92%   45, 50, 53
+architecture/request.py           67      2    97%   32, 49
+architecture/response.py         112     24    79%   29-30, 32-33, 37-46, 80, 87-93, 116, 120
+architecture/utils.py             24      0   100%
+tests/test_flags.py               28      0   100%
+tests/test_record_types.py        28      0   100%
+tests/test_request.py             50      0   100%
+tests/test_response.py            45      0   100%
+tests/test_utils.py               17      0   100%
+------------------------------------------------------------
+TOTAL                            478     41    91%
+
+```
 
 ## Запуск
 

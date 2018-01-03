@@ -1,0 +1,61 @@
+2018-01-02 22:01:51,643 [DEBUG <dns-client>] Application started.
+2018-01-02 22:01:51,643 [DEBUG <dns-client>] Try to get info from 8.8.8.8 by 53 port using UDP with timeout 100.
+2018-01-02 22:01:51,643 [DEBUG <dns-client>] Address 8.8.8.8 is IPv4.
+2018-01-02 22:01:51,644 [DEBUG <dns-client>] Socket is created.
+2018-01-02 22:01:51,645 [DEBUG <dns-client>] Let's try connect to the server...
+2018-01-02 22:01:51,645 [DEBUG <dns-client>] It's OK.
+2018-01-02 22:01:51,645 [DEBUG <dns-client>] Try to send query with type 'A' about yandex.ru with recursion desired.
+2018-01-02 22:01:51,680 [DEBUG <dns-client>] Try to parse raw response: b'\xfa\xba\x81\x80\x00\x01\x00\x04\x00\x00\x00\x00\x06yandex\x02ru\x00\x00\x01\x00\x01\xc0\x0c\x00\x01\x00\x01\x00\x00\x00 \x00\x04MX7P\xc0\x0c\x00\x01\x00\x01\x00\x00\x00 \x00\x04MX7F\xc0\x0c\x00\x01\x00\x01\x00\x00\x00 \x00\x04\x05\xff\xff<\xc0\x0c\x00\x01\x00\x01\x00\x00\x00 \x00\x04\x05\xff\xffP'
+2018-01-02 22:01:51,680 [DEBUG <dns-client>] Try to parse raw header: b'\xfa\xba\x81\x80\x00\x01\x00\x04\x00\x00\x00\x00'
+2018-01-02 22:01:51,681 [DEBUG <dns-client>] OK.
+2018-01-02 22:01:51,681 [DEBUG <dns-client>] Try to parse a body of raw message
+2018-01-02 22:01:51,681 [DEBUG <dns-client>] Parsed
+2018-01-02 22:01:51,681 [DEBUG <dns-client>] It's OK.
+2018-01-02 22:01:51,681 [INFO <dns-client>]     Transaction ID: 0xfaba
+    Flags: 0x8180 (1000000110000000)
+        Response: message is response (1)
+        Opcode: Standart query (0)
+        Authorative: Server is not an authorative for this domain (0)
+        Truncated: Message is not truncated (0)
+        Recursion Desired: Do query recursively (1)
+        Recursion Available: Server can do recursive queries (1)
+        Answer authenticated: Answer/Authority portion was not authenticated by the server (0)
+        Non-authenticated data: Unacceptable (0)
+        Reply code: No error (0)
+    Questions: 1
+    Answers: 4
+    Authority RRs: 0
+    Additional RRs: 0
+
+QUESTION[0]
+    Name: yandex.ru
+    Type: A
+    Class: IN
+ANSWER[0]
+    Name: yandex.ru
+    Type: A
+    Class: IN
+    TTL: 32
+77.88.55.80
+ANSWER[1]
+    Name: yandex.ru
+    Type: A
+    Class: IN
+    TTL: 32
+77.88.55.70
+ANSWER[2]
+    Name: yandex.ru
+    Type: A
+    Class: IN
+    TTL: 32
+5.255.255.60
+ANSWER[3]
+    Name: yandex.ru
+    Type: A
+    Class: IN
+    TTL: 32
+5.255.255.80
+
+2018-01-02 22:01:51,681 [DEBUG <dns-client>] Try to disconnect server
+2018-01-02 22:01:51,681 [DEBUG <dns-client>] Disconnected.
+2018-01-02 22:01:51,682 [DEBUG <dns-client>] Application is end.
