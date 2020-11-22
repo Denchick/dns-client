@@ -1,33 +1,27 @@
-# DNS-клиент
+# DNS-client
 
-Версия 1.0
+## What already does
 
-Автор: Волков Денис
+- Specifying your DNS server instead of the standard one (standard 8.8.8.8)
+- Selection of the type of information to be obtained. Records such as A, NS and AAAA are already supported
+- The port through which the client will access the server
+- Support for both recursive and iterative regimes
+- Setting timeouts - time between attempts to request the server
+- TCP or UDP
 
-## Описание
+## Dependencies
 
-Данный DNS-клиент определяет IP-адрес узла по полному доменному имени. Уже поддерживаются следующие возможности:
+- Python >= 3
 
-- Указание своего DNS-сервера вместо стандартного (стандартный 8.8.8.8)
-- Выбор типа информации, которую нужно получить. Уже поддерживаются такие записи, как A, NS и AAAA
-- Порт, по которому клиент будет обращаться к серверу
-- Поддержка как рекурсивного, так и итеративного режима
-- Установка таймаутов - времени между попытками запросов к серверу
-- TCP или UDP
+## Package structure
 
-## Требования
+- Client: `dns-client.py`
+- Internal: `architecture/`
+- tests: `tests/`
 
-- Python версии не ниже 3
+Modules in `architecture/` have tests and can be found in `/tests`. The line coverage is 91%
 
-## Состав
-
-- Клиент: `dns-client.py`
-- Модули: `architecture/`
-- Тесты: `tests/`
-
-На модули в `architecture/`  написаны тесты, их можно найти в `/tests`. Покрытие по строкам составляет 89%
-
-Для запуска тестов можно использовать `runtest.sh` (нужен `bash`, `coverage3`)
+You can use `runtest.sh` (you need `bash`, `coverage3`) to run the tests.
 
 ```bash
 
@@ -49,14 +43,14 @@ TOTAL                            478     41    91%
 
 ```
 
-## Запуск
+## How to run
 
-Справка по запуску: `./dns-client.py --help`
+Help: `./dns-client.py --help`
 
-Пример запуска: `./dns-client.py yandex.ru`
+Example: `./dns-client.py yandex.ru`
 
-## Подробности реализации
+## Details
 
-Все необходимые модули находятся в каталоге `architecture/` . Основной функционал предоставляет `client.py` - здесь происходит настройка DNS-запроса. Файлы `flags.py`, `record_types.py`, `request.py`, `response.py` и `utils.py` описывают структуру DNS-запроса, отвечают за его обработку, кодирование и декодирование.
+All the necessary modules can be found in `architecture/` . The basic functionality is provided by `client.py` - this is where the DNS query is configured. The files `flags.py`, `record_types.py`, `request.py`, `response.py` and `utils.py` describe the structure of the DNS query and are responsible for processing, encoding and decoding it.
 
-Всю подробную информацию о протоколе DNS можно прочитать в [RFC1035](http://www.ietf.org/rfc/rfc1035) .
+All details of the DNS protocol can be read in [RFC1035](http://www.ietf.org/rfc/rfc1035) .
